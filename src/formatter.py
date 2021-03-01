@@ -1,6 +1,9 @@
 from textwrap import TextWrapper
 from datetime import datetime
 
+from bs4 import BeautifulSoup
+from html2markdown import convert
+
 CLOSED_FORMAT = """
 Closed: {reason}  Date: {close_date}
 """.strip()
@@ -22,7 +25,7 @@ Tags: {tags}
 
 COMMENT_FORMAT = """
 {F_body}
-      {creation_date} - {F_edited}{display_name} ({reputation})
+    - {creation_date}   {F_edited}{display_name} ({reputation})
 """.strip()
 
 ANSWER_FORMAT = """
@@ -45,17 +48,30 @@ class Wrapper(TextWrapper):
 	break_long_words = False
 	break_on_hyphens = False
 
-def format_body(body):
+def indent(text, size=2):
 	wrapper = Wrapper()
-	wrapper.initial_indent    = "  "
-	wrapper.subsequent_indent = "  "
-	return "\n".join(wrapper.wrap(body))
+	wrapper.initial_indent    = " " * size
+	wrapper.subsequent_indent = " " * size
+	lines = text.split("\n")
+
+	result = "\n".join(l for ls in lines for l in wrapper.wrap(ls))
+	return result
+
+def drop_problematic_attrs(body):
+	soup = BeautifulSoup(body, "html.parser")
+	for tag in soup.find_all(rel=True):
+		del tag['rel']
+	return str(soup)
+
+def format_body(body):
+	body = drop_problematic_attrs(body)
+	text = convert(body)
+	return indent(text)
 
 def format_comment_body(body):
-	wrapper = Wrapper()
-	wrapper.initial_indent    = "  "
-	wrapper.subsequent_indent = "  "
-	return "\n".join(wrapper.wrap(body))
+	body = drop_problematic_attrs(body)
+	text = convert(body)
+	return indent(text)
 
 def format_date(epoch_ts):
 	date = datetime.fromtimestamp(int(epoch_ts))
@@ -87,7 +103,7 @@ def format_comments(comments):
 	
 	formatted_comments = [format_comment(comment) for comment in comments]
 	comment_str = "\n".join(formatted_comments)
-	return f"\n\nComments:\n{comment_str}"
+	return f"\n\n# Comments:\n{comment_str}"
 
 def format_is_accepted(answer):
 	return "  (Accepted)" if answer['is_accepted'] else ""
@@ -149,7 +165,7 @@ def format_all(question):
 	question_str = format_question(question)
 	answer_strs = [format_answer(answer) for answer in question.get('answers', [])]
 
-	result = "\n---\n".join([question_str] + answer_strs)
+	result = "\n\n---\n\n".join([question_str] + answer_strs)
 	return result
 
 def main():
