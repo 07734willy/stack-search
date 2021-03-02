@@ -1,5 +1,5 @@
-from question import format_question
-from answer import format_answer
+from .question import format_question
+from .answer import format_answer
 
 def format_page(question, width):
 	question_str = format_question(question, width)

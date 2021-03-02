@@ -1,6 +1,6 @@
-from generic import format_date, format_last_edited_date
-from comment import format_comments
-from code import format_body
+from .generic import format_date, format_last_edited_date
+from .comment import format_comments
+from .code import format_body
 
 ANSWER_FORMAT = """
 Score: {score}{F_accepted}

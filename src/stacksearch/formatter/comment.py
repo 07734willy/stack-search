@@ -1,7 +1,7 @@
 from html2markdown import convert
 
-from code import drop_bad_attrs
-from generic import indent, format_date
+from .code import drop_bad_attrs
+from .generic import indent, format_date
 
 COMMENT_FORMAT = """
 {F_body}

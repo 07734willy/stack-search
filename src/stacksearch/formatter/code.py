@@ -1,7 +1,7 @@
 from html2markdown import convert
 from bs4 import BeautifulSoup
 
-from generic import indent, wrap
+from .generic import indent, wrap
 
 BODY_PREFIX = " " * 2
 
