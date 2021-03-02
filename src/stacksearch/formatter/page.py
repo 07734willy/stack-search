@@ -3,7 +3,9 @@ from .answer import format_answer
 
 def format_page(question, width):
 	question_str = format_question(question, width)
-	answer_strs = [format_answer(answer, width) for answer in question.get('answers', [])]
+	answers = question.get('answers', [])
+	answers.sort(key=lambda x: int(x['score']), reverse=True)
+	answer_strs = [format_answer(answer, width) for answer in answers]
 
 	result = "\n\n---\n\n".join([question_str] + answer_strs)
 	return result
