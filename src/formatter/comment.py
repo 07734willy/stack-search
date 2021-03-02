@@ -14,10 +14,10 @@ COMMENT_OWNER_FORMAT = """
 
 COMMENT_INDENT = " " * 2
 
-def format_comment_body(body):
+def format_comment_body(body, width):
 	new_body = drop_bad_attrs(body)
 	text = convert(new_body)
-	return indent(text, COMMENT_INDENT)
+	return indent(text, COMMENT_INDENT, width)
 
 def format_comment_owner(comment):
 	creation_date = format_date(comment['creation_date'])
@@ -43,7 +43,7 @@ def format_comment_meta(comment, width):
 	return f"{score_str}{padding}{owner_str}"
 	
 def format_comment(comment, width):
-	body = format_comment_body(comment['body'])
+	body = format_comment_body(comment['body'], width)
 	comment_meta = format_comment_meta(comment, width)
 	return COMMENT_FORMAT.format(
 		F_body=body,
