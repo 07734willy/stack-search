@@ -35,10 +35,11 @@ def wrap(text, width=None):
 	return indent(text, "", width)
 
 def format_date(epoch_ts):
-	date = datetime.fromtimestamp(int(epoch_ts))
+	date = datetime.utcfromtimestamp(int(epoch_ts))
 	return date.strftime("%b %d '%y at %H:%M")
 
 def format_last_edited_date(item):
-	if 'last_edited_date' in item:
-		return format_date(item['last_edited_date'])
+	if 'last_edit_date' in item:
+		date = format_date(item['last_edit_date'])
+		return f"  Last Edited: {date}"
 	return ""

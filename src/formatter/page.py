@@ -14,7 +14,7 @@ def main():
 		data = json.load(f)
 
 	question0 = data['items'][0]
-	print(format_page(question0, 80))
+	print(format_page(question0, 140))
 
 if __name__ == "__main__":
 	main()
